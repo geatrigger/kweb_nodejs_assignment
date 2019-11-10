@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 });
 app.get('/diaries', (req, res) => {
     if(diaryBook && diaryBook.length > 0)
-        res.send(diaryBook);
+        res.send(JSON.stringify(diaryBook));
     else
         res.send("no diary!");
 });
@@ -35,19 +35,19 @@ app.get('/diary/:id', (req, res) => {
         if(!diaryBook[id].isActive)
             res.send("Diary was deleted");
         else
-            res.send(diaryBook[id]);
+            res.send(JSON.stringify(diaryBook[id]));
     }
 });
 app.get('/diary', (req, res) => {
     res.redirect("/diary/" + req.query["id"]);
 });
 app.post('/diary', (req, res) => {
-    console.log("POST asdf\n" + Object.keys(req.body).map(k => `${k}: ${req.body[k]}`).join('\n'));
+    //console.log("POST asdf\n" + Object.keys(req.body).map(k => `${k}: ${req.body[k]}`).join('\n'));
     let title = req.body["title"];
     if(title)
     {
         addDiary(title);
-        res.send(diaryBook[idIndex-1] + "\nDiary added");
+        res.send(JSON.stringify(diaryBook[idIndex-1]) + "\nDiary added");
     }
 });
 app.put("/diary", (req, res) => {
@@ -63,7 +63,7 @@ app.put("/diary", (req, res) => {
         else
         {
             diaryBook[id].title = title;
-            res.send(diaryBook[id] + "\nDiary changed");
+            res.send(JSON.stringify(diaryBook[id]) + "\nDiary changed");
         }
     }
 });
@@ -80,7 +80,7 @@ app.delete("/diary", (req, res) => {
         {
             diaryBook[id].title = "";
             diaryBook[id].isActive = false;
-            res.send(diaryBook[id] + "\nDiary deleted");
+            res.send(JSON.stringify(diaryBook[id]) + "\nDiary deleted");
         }
     }
 });
