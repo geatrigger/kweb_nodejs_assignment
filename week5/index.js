@@ -13,6 +13,23 @@ const addDiary = (title)=>{
     diaryBook.push(diary);
     idIndex++;
 };
+const showDiary = (diary) => {
+    let message = "";
+    for (const key in diary) {
+        if (diary.hasOwnProperty(key)) {
+            const element = diary[key];
+            message += key + " : " + element + "\n";
+        }
+    }
+    return message;
+};
+const showDiaryBook = (diaryBook) => {
+    let message = "";
+    diaryBook.forEach(diary => {
+        message += showDiary(diary) + "\n";
+    });
+    return message;
+};
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -21,7 +38,7 @@ app.get('/', (req, res) => {
 });
 app.get('/diaries', (req, res) => {
     if(diaryBook && diaryBook.length > 0)
-        res.send(JSON.stringify(diaryBook));
+        res.send(showDiaryBook(diaryBook));
     else
         res.send("no diary!");
 });
@@ -35,7 +52,7 @@ app.get('/diary/:id', (req, res) => {
         if(!diaryBook[id].isActive)
             res.send("Diary was deleted");
         else
-            res.send(JSON.stringify(diaryBook[id]));
+            res.send(showDiary(diaryBook[id]));
     }
 });
 app.get('/diary', (req, res) => {
@@ -47,7 +64,7 @@ app.post('/diary', (req, res) => {
     if(title)
     {
         addDiary(title);
-        res.send(JSON.stringify(diaryBook[idIndex-1]) + "\nDiary added");
+        res.send(showDiary(diaryBook[idIndex-1]) + "\nDiary added");
     }
 });
 app.put("/diary", (req, res) => {
@@ -63,7 +80,7 @@ app.put("/diary", (req, res) => {
         else
         {
             diaryBook[id].title = title;
-            res.send(JSON.stringify(diaryBook[id]) + "\nDiary changed");
+            res.send(showDiary(diaryBook[id]) + "\nDiary changed");
         }
     }
 });
@@ -80,7 +97,7 @@ app.delete("/diary", (req, res) => {
         {
             diaryBook[id].title = "";
             diaryBook[id].isActive = false;
-            res.send(JSON.stringify(diaryBook[id]) + "\nDiary deleted");
+            res.send(showDiary(diaryBook[id]) + "\nDiary deleted");
         }
     }
 });
